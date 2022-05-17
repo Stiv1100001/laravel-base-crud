@@ -11,7 +11,7 @@ class ComicController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     *
      */
     public function index()
     {
@@ -23,7 +23,7 @@ class ComicController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     *
      */
     public function create()
     {
@@ -58,10 +58,11 @@ class ComicController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Comic  $comic
-     * @return \Illuminate\Http\Response
+     *
      */
-    public function show(Comic $comic)
+    public function show($id)
     {
+        $comic = Comic::findOrFail($id);
         return view('comic.show', ["comic" => $comic]);
     }
 
