@@ -40,13 +40,28 @@ class ComicController extends Controller
     {
         $data = $request->all();
 
+        $request->validate([
+            "title" => "required|max:250",
+            "thumb" => "required|max:250|url",
+            "price" => "required|numeric",
+            "series" => "required|max:250",
+            "type" => "required|max:250",
+            "sale_date" => "required|date",
+        ], [
+            "required" => "Il campo :attribute è obbligatorio'.",
+            "max" => "Il campo :attribute deve essere lungo al massimo 250 caratteri",
+            "price.numeric" => "IL prezzo deve essere un numero",
+            "thumb.url" => "Thumb deve essere un url",
+            "sale_date.date" => ""
+        ]);
+
         $newComic = new Comic();
         $newComic->title = $data["title"];
         $newComic->description = $data[ "description"];
         $newComic->thumb = $data["thumb"];
-        $newComic->price = floatval($data[ "price"]);
+        $newComic->price = floatval($data["price"]);
         $newComic->series = $data["series"];
-        $newComic->sale_date = DateTime::createFromFormat("Y-m-d", $data["series"]);
+        $newComic->sale_date = DateTime::createFromFormat("Y-m-d", $data["sale_date"]);
         $newComic->type = $data["type"];
 
         $newComic->save();
@@ -60,9 +75,8 @@ class ComicController extends Controller
      * @param  \App\Comic  $comic
      *
      */
-    public function show($id)
+    public function show(Comic $comic)
     {
-        $comic = Comic::findOrFail($id);
         return view('comic.show', ["comic" => $comic]);
     }
 
@@ -70,11 +84,11 @@ class ComicController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Comic  $comic
-     * @return \Illuminate\Http\Response
+    //  * @return \Illuminate\Http\Response
      */
     public function edit(Comic $comic)
     {
-        //
+        return view('comic.edit', ["comic" => $comic]);
     }
 
     /**
@@ -86,7 +100,19 @@ class ComicController extends Controller
      */
     public function update(Request $request, Comic $comic)
     {
-        //
+        $data = $request->all();
+
+        $comic->title = $data["title"];
+        $comic->description = $data[ "description"];
+        $comic->thumb = $data["thumb"];
+        $comic->price = floatval($data["price"]);
+        $comic->series = $data["series"];
+        $comic->sale_date = DateTime::createFromFormat("Y-m-d", $data["sale_date"]);
+        $comic->type = $data["type"];
+
+        $comic->save();
+
+        return redirect()->route('comic.show', ['comic' => $comic]);
     }
 
     /**
@@ -97,6 +123,7 @@ class ComicController extends Controller
      */
     public function destroy(Comic $comic)
     {
-        //
+        $comic->delete();
+        return redirect()->route('comic.index');
     }
 }
