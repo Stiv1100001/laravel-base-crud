@@ -5,7 +5,7 @@
 @section('main')
 <main class="container my-5">
     <h1>New comic</h1>
-    <form action="{{ route('comic.store') }}" class="d-flex flex-column">
+    <form action="{{ route('comic.store') }}" method="POST" class="d-flex flex-column">
         @csrf
         <label for="title">Title</label>
         <input type="text" name="title" class="mb-3">
